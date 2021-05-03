@@ -1,6 +1,7 @@
 package com.mocadev.datajpa.repository;
 
 import com.mocadev.datajpa.entity.Member;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -11,5 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since 2021-04-30
  **/
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
+	List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 
 }
