@@ -8,6 +8,7 @@ import com.mocadev.datajpa.entity.Member;
 import com.mocadev.datajpa.entity.Team;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -112,6 +113,18 @@ class MemberRepositoryTest {
 		for (Member member : result) {
 			System.out.println("member = " + member);
 		}
+	}
+
+	@Test
+	void returnTypeTest() {
+		Member m1 = new Member("AAA", 20);
+		Member m2 = new Member("BBB", 10);
+		memberRepository.save(m1);
+		memberRepository.save(m2);
+
+		Member findMember = memberRepository.findMemberByUsername("AAA");
+		Optional<Member> optionalMember = memberRepository.findOptionalByUsername("AAAAA");
+		System.out.println("optionalMember = " + optionalMember);
 	}
 
 }
