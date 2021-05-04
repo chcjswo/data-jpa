@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -261,5 +262,82 @@ class MemberRepositoryTest {
 		assertThat(resultCount).isEqualTo(4);
 	}
 
+	@Test
+	void lazyTest() throws Exception {
+		// given
+		// member1 -> teamA
+		// member2 -> teamB
+
+		Team teamA = new Team("teamA");
+		Team teamB = new Team("teamB");
+		teamRepository.save(teamA);
+		teamRepository.save(teamB);
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamB);
+		memberRepository.save(member1);
+		memberRepository.save(member2);
+
+		em.flush();
+		em.clear();
+
+		// when N + 1
+		List<Member> members = memberRepository.findAll();
+		for (Member member : members) {
+			System.out.println("member = " + member.getUsername());
+			System.out.println("member.team = " + member.getTeam().getName());
+		}
+	}
+
+	@Test
+	void fetchJoinTest() throws Exception {
+		// given
+		// member1 -> teamA
+		// member2 -> teamB
+
+		Team teamA = new Team("teamA");
+		Team teamB = new Team("teamB");
+		teamRepository.save(teamA);
+		teamRepository.save(teamB);
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamB);
+		memberRepository.save(member1);
+		memberRepository.save(member2);
+
+		em.flush();
+		em.clear();
+
+		// when N + 1
+		List<Member> members = memberRepository.findMemberFetchJoin();
+		for (Member member : members) {
+			System.out.println("member = " + member.getUsername());
+			System.out.println("member.team = " + member.getTeam().getName());
+		}
+	}
+
+	@Test
+	void entityGraphTest() throws Exception {
+		// given
+		// member1 -> teamA
+		// member2 -> teamB
+
+		Team teamA = new Team("teamA");
+		Team teamB = new Team("teamB");
+		teamRepository.save(teamA);
+		teamRepository.save(teamB);
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamB);
+		memberRepository.save(member1);
+		memberRepository.save(member2);
+
+		em.flush();
+		em.clear();
+
+		// when
+		List<Member> members = memberRepository.findAll();
+		for (Member member : members) {
+			System.out.println("member = " + member.getUsername());
+			System.out.println("member.team = " + member.getTeam().getName());
+		}
+	}
 
 }
