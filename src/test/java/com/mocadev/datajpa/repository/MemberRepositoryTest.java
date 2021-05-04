@@ -9,6 +9,8 @@ import com.mocadev.datajpa.entity.Team;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,8 +41,12 @@ class MemberRepositoryTest {
 	@Autowired
 	TeamRepository teamRepository;
 
+	@PersistenceContext
+	EntityManager em;
+
 	@Test
 	void testMember() {
+		// given
 		Member member = new Member("jpa");
 		Member savedMember = memberRepository.save(member);
 
@@ -52,6 +58,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void findByUsernameAndAgeGreaterThanTest() {
+		// given
 		Member m1 = new Member("AAA", 20);
 		Member m2 = new Member("AAA", 10);
 
@@ -67,6 +74,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void findUserTest() {
+		// given
 		Member m1 = new Member("AAA", 20);
 		Member m2 = new Member("AAA", 10);
 		memberRepository.save(m1);
@@ -81,6 +89,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void findUsernameListTest() {
+		// given
 		Member m1 = new Member("AAA", 20);
 		Member m2 = new Member("AAA", 10);
 		memberRepository.save(m1);
@@ -93,6 +102,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void findDtoTest() {
+		// given
 		Team team = new Team("teamA");
 		teamRepository.save(team);
 
@@ -109,6 +119,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void findNamesTest() {
+		// given
 		Member m1 = new Member("AAA", 20);
 		Member m2 = new Member("BBB", 10);
 		memberRepository.save(m1);
@@ -134,6 +145,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void pagingTest() {
+		// given
 		memberRepository.save(new Member("member1", 20));
 		memberRepository.save(new Member("member2", 20));
 		memberRepository.save(new Member("member3", 20));
@@ -165,6 +177,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void pagingDtoTest() {
+		// given
 		memberRepository.save(new Member("member1", 20));
 		memberRepository.save(new Member("member2", 20));
 		memberRepository.save(new Member("member3", 20));
@@ -202,6 +215,7 @@ class MemberRepositoryTest {
 
 	@Test
 	void sliceTest() {
+		// given
 		memberRepository.save(new Member("member1", 20));
 		memberRepository.save(new Member("member2", 20));
 		memberRepository.save(new Member("member3", 20));
@@ -226,5 +240,26 @@ class MemberRepositoryTest {
 		assertThat(page.isFirst()).isTrue();
 		assertThat(page.hasNext()).isTrue();
 	}
+
+	@Test
+	void bulkUpdateTest() {
+		// given
+		memberRepository.save(new Member("member1", 10));
+		memberRepository.save(new Member("member2", 19));
+		memberRepository.save(new Member("member3", 21));
+		memberRepository.save(new Member("member4", 24));
+		memberRepository.save(new Member("member5", 40));
+		memberRepository.save(new Member("member6", 30));
+
+		// when
+		int resultCount = memberRepository.bulkAgePlus(20);
+
+		Member member5 = memberRepository.findMemberByUsername("member5");
+		System.out.println("member5 = " + member5);
+
+		// then
+		assertThat(resultCount).isEqualTo(4);
+	}
+
 
 }
