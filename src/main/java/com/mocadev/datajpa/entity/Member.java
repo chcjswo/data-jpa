@@ -27,7 +27,8 @@ import lombok.ToString;
 @ToString(of = {"id", "username", "age"})
 public class Member extends BaseEntity {
 
-	@Id @GeneratedValue
+	@Id
+	@GeneratedValue
 	@Column(name = "member_id")
 	private Long id;
 	private String username;

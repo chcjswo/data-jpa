@@ -9,7 +9,7 @@ package com.mocadev.datajpa.repository;
  **/
 public interface UsernameOnly {
 
-//	@Value("#{target.username + '  ' + target.age}")
+	//	@Value("#{target.username + '  ' + target.age}")
 	String getUsername();
 
 }
