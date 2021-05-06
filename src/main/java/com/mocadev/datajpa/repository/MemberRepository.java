@@ -1,6 +1,7 @@
 package com.mocadev.datajpa.repository;
 
 import com.mocadev.datajpa.dto.MemberDto;
+import com.mocadev.datajpa.dto.UsernameOnlyDto;
 import com.mocadev.datajpa.entity.Member;
 import java.util.Collection;
 import java.util.List;
@@ -69,5 +70,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<Member> findLockByUsername(String username);
+
+	List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+	<T> List<T> findProjectionsDtoByUsername(@Param("username") String username, Class<T> type);
 
 }

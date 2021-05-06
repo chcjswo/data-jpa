@@ -4,6 +4,7 @@ package com.mocadev.datajpa.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mocadev.datajpa.dto.MemberDto;
+import com.mocadev.datajpa.dto.UsernameOnlyDto;
 import com.mocadev.datajpa.entity.Member;
 import com.mocadev.datajpa.entity.Team;
 import java.util.Arrays;
@@ -382,6 +383,75 @@ class MemberRepositoryTest {
 		List<Member> result = memberRepository.findMemberCustom();
 
 		result.forEach(m -> System.out.println("m = " + m));
+	}
+
+	@Test
+	void projectionsTest() throws Exception {
+		// given
+		Team teamA = new Team("teamA");
+		em.persist(teamA);
+
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamA);
+		em.persist(member1);
+		em.persist(member2);
+
+		em.flush();
+		em.clear();
+
+		// when
+		List<UsernameOnly> result = memberRepository.findProjectionsByUsername("member1");
+
+		for (UsernameOnly usernameOnly : result) {
+			System.out.println("usernameOnly = " + usernameOnly);
+		}
+	}
+
+	@Test
+	void projectionsDtoTest() throws Exception {
+		// given
+		Team teamA = new Team("teamA");
+		em.persist(teamA);
+
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamA);
+		em.persist(member1);
+		em.persist(member2);
+
+		em.flush();
+		em.clear();
+
+		// when
+		List<UsernameOnlyDto> result = (List<UsernameOnlyDto>) memberRepository
+			.findProjectionsDtoByUsername("member1", UsernameOnlyDto.class);
+
+		for (UsernameOnlyDto usernameOnly : result) {
+			System.out.println("usernameOnly = " + usernameOnly.getUsername());
+		}
+	}
+
+	@Test
+	void nestedClosedProjectionsTest() throws Exception {
+		// given
+		Team teamA = new Team("teamA");
+		em.persist(teamA);
+
+		Member member1 = new Member("member1", 10, teamA);
+		Member member2 = new Member("member2", 10, teamA);
+		em.persist(member1);
+		em.persist(member2);
+
+		em.flush();
+		em.clear();
+
+		// when
+		List<NestedClosedProjections> result = memberRepository
+			.findProjectionsDtoByUsername("member1", NestedClosedProjections.class);
+
+		for (NestedClosedProjections usernameOnly : result) {
+			System.out.println("usernameOnly = " + usernameOnly.getUsername());
+			System.out.println("team name = " + usernameOnly.getTeam().getName());
+		}
 	}
 
 }
